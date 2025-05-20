@@ -62,7 +62,7 @@ Tu peux créer ou modifier des fichiers dans :
 
 ## 💡 Développeur
 
-Créé par [BleuDragonViolet](https://github.com/BleuDragonViolet)
+Créé par [BleuDragonViolet](https://github.com/BleuDragonViolet) [Affmal](https://github.com/affmalmodz)
 
 ---
 
