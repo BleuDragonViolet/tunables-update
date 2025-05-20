@@ -1,4 +1,3 @@
-```markdown
 # 🔧 tunables.lua – Auto-Updater pour Stand Lua (GTA V)
 
 Un script Lua pour le mod menu **Stand** sur GTA V, permettant de :
@@ -10,12 +9,10 @@ Un script Lua pour le mod menu **Stand** sur GTA V, permettant de :
 ## 📁 Structure du projet
 
 ```
-
 tunables-update/
 ├── tunables.lua          # Script principal utilisé dans Stand
 ├── version.txt           # Fichier texte contenant le numéro de version actuel
 └── README.md             # Ce fichier
-
 ```
 
 ## 🚀 Fonctionnalités principales
@@ -33,11 +30,9 @@ tunables-update/
 - Avoir **Stand Mod Menu** installé sur GTA V.
 - Accéder à **Stand > Lua Scripts**.
 - **Activer l’accès Internet** pour les scripts Lua :
-```
-
-Stand > Settings > Lua Scripts > Allow Internet Access (à cocher)
-
-```
+  ```
+  Stand > Settings > Lua Scripts > Allow Internet Access (à cocher)
+  ```
 
 ## 📥 Installation
 
@@ -54,9 +49,7 @@ Le script vérifie à chaque exécution si une version plus récente est disponi
 
 ⚠️ Si tu vois l'erreur :
 ```
-
-\[Update] Erreur : internet.request\_async non dispo.
-
+[Update] Erreur : internet.request_async non dispo.
 ```
 Assure-toi que l’accès Internet est activé dans les options de Stand.
 
@@ -64,18 +57,15 @@ Assure-toi que l’accès Internet est activé dans les options de Stand.
 
 Tu peux créer ou modifier des fichiers dans :
 ```
-
-%AppData%\Stand\Lua Scripts\store\Liberty City\Language\\
-
+%AppData%\Stand\Lua Scripts\store\Liberty City\Language\
 ```
 
 ## 💡 Développeur
 
-Créé par [BleuDragonViolet](https://github.com/BleuDragonViolet) affmal
+Créé par [BleuDragonViolet](https://github.com/BleuDragonViolet)
 
 ---
 
 ## 📜 Licence
 
 Ce script est distribué gratuitement. Tu peux le modifier ou le réutiliser tant que tu crédite l’auteur original.
-```
