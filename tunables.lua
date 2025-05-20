@@ -1,57 +1,61 @@
--- MISE À JOUR AUTOMATIQUE DE TUNABLES.LUA
-
 local VERSION_URL = "https://raw.githubusercontent.com/BleuDragonViolet/tunables-update/main/version.txt"
 local LUA_URL = "https://raw.githubusercontent.com/BleuDragonViolet/tunables-update/main/tunables.lua"
-local LOCAL_VERSION_FILE = filesystem.scripts_dir() .. "HC_version.txt"
-local LOCAL_TUNABLES_FILE = filesystem.scripts_dir() .. "tunables.lua"
+local LOCAL_VERSION_PATH = filesystem.stand_dir() .. "Lua Scripts\\version.txt"
+local LOCAL_TUNABLES_PATH = filesystem.stand_dir() .. "Lua Scripts\\tunables.lua"
 
--- Lire la version locale stockée dans HC_version.txt
+-- Fonction pour lire version.txt
 local function read_local_version()
-    if filesystem.exists(LOCAL_VERSION_FILE) then
-        local f = io.open(LOCAL_VERSION_FILE, "r")
-        local v = f:read("*a")
+    if filesystem.exists(LOCAL_VERSION_PATH) then
+        local f = io.open(LOCAL_VERSION_PATH, "r")
+        local version = f:read("*a")
         f:close()
-        return v:gsub("%s+", "")
+        return version:gsub("%s+", "")
     else
         return "none"
     end
 end
 
--- Écrire la version locale après mise à jour
+-- Fonction pour écrire version.txt
 local function write_local_version(version)
-    local f = io.open(LOCAL_VERSION_FILE, "w")
+    local f = io.open(LOCAL_VERSION_PATH, "w")
     f:write(version)
     f:close()
 end
 
--- Vérifie la version distante et met à jour le fichier tunables.lua si besoin
-web.get(VERSION_URL, function(remote_version, status_code)
-    if status_code ~= 200 then
-        util.toast("[HC Update] Erreur : impossible de récupérer version.txt")
+-- Récupérer version distante
+http.get(VERSION_URL, function(success, remote_version)
+    if not success then
+        util.toast("[Update] Erreur : impossible de récupérer version.txt")
         return
     end
 
+    remote_version = remote_version:gsub("%s+", "")
     local local_version = read_local_version()
-    if remote_version:gsub("%s+", "") ~= local_version then
-        util.toast("[HC Update] Nouvelle version détectée, téléchargement...")
 
-        web.get(LUA_URL, function(lua_data, lua_status)
-            if lua_status ~= 200 then
-                util.toast("[HC Update] Erreur : téléchargement de tunables.lua échoué")
+    if remote_version ~= local_version then
+        util.toast("[Update] Mise à jour détectée, téléchargement...")
+
+        http.get(LUA_URL, function(success2, new_code)
+            if not success2 then
+                util.toast("[Update] Erreur : téléchargement échoué")
                 return
             end
 
-            local f = io.open(LOCAL_TUNABLES_FILE, "w")
-            f:write(lua_data)
+            local f = io.open(LOCAL_TUNABLES_PATH, "w")
+            f:write(new_code)
             f:close()
 
             write_local_version(remote_version)
-            util.toast("[HC Update] tunables.lua mis à jour avec succès.")
+            util.toast("[Update] Mise à jour terminée.")
         end)
     else
-        util.toast("[HC Update] Fichier déjà à jour.")
+        util.toast("[Update] tunables.lua est déjà à jour.")
     end
 end)
+
+
+
+
 HC_DIR = filesystem.store_dir() .. "Heist Control\\"
         FolderDirs = {
             Img = HC_DIR .. "Image\\",
