@@ -3,7 +3,7 @@ local LUA_URL = "https://raw.githubusercontent.com/BleuDragonViolet/tunables-upd
 local LOCAL_VERSION_PATH = filesystem.stand_dir() .. "Lua Scripts\\version.txt"
 local LOCAL_TUNABLES_PATH = filesystem.stand_dir() .. "Lua Scripts\\tunables.lua"
 
--- Fonction pour lire version.txt
+-- Lire version locale
 local function read_local_version()
     if filesystem.exists(LOCAL_VERSION_PATH) then
         local f = io.open(LOCAL_VERSION_PATH, "r")
@@ -15,43 +15,48 @@ local function read_local_version()
     end
 end
 
--- Fonction pour écrire version.txt
+-- Écrire version locale
 local function write_local_version(version)
     local f = io.open(LOCAL_VERSION_PATH, "w")
     f:write(version)
     f:close()
 end
 
--- Récupérer version distante
-http.get(VERSION_URL, function(success, remote_version)
-    if not success then
-        util.toast("[Update] Erreur : impossible de récupérer version.txt")
-        return
-    end
+-- Vérification via internet.request_async (sans require)
+if internet and internet.request_async then
+    internet.request_async(VERSION_URL, function(remote_version, status_code, _)
+        if status_code ~= 200 then
+            util.toast("[Update] Impossible de récupérer version.txt")
+            return
+        end
 
-    remote_version = remote_version:gsub("%s+", "")
-    local local_version = read_local_version()
+        local local_version = read_local_version()
+        remote_version = remote_version:gsub("%s+", "")
 
-    if remote_version ~= local_version then
-        util.toast("[Update] Mise à jour détectée, téléchargement...")
+        if remote_version ~= local_version then
+            util.toast("[Update] Nouvelle version détectée !")
 
-        http.get(LUA_URL, function(success2, new_code)
-            if not success2 then
-                util.toast("[Update] Erreur : téléchargement échoué")
-                return
-            end
+            internet.request_async(LUA_URL, function(lua_data, lua_status, _)
+                if lua_status ~= 200 then
+                    util.toast("[Update] Échec du téléchargement.")
+                    return
+                end
 
-            local f = io.open(LOCAL_TUNABLES_PATH, "w")
-            f:write(new_code)
-            f:close()
+                local f = io.open(LOCAL_TUNABLES_PATH, "w")
+                f:write(lua_data)
+                f:close()
 
-            write_local_version(remote_version)
-            util.toast("[Update] Mise à jour terminée.")
-        end)
-    else
-        util.toast("[Update] tunables.lua est déjà à jour.")
-    end
-end)
+                write_local_version(remote_version)
+                util.toast("[Update] tunables.lua mis à jour avec succès.")
+            end)
+        else
+            util.toast("[Update] Déjà à jour.")
+        end
+    end)
+else
+    util.toast("[Update] Erreur : internet.request_async non dispo.")
+end
+
 
 
 
